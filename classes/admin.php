@@ -72,6 +72,15 @@ class YH_Name_Your_Price_Admin {
                         'data_type' => 'price',
                     )
                 );
+
+                // Show custom option checkbox.
+                woocommerce_wp_checkbox(
+                    array(
+                        'id' => '_yh_allow_custom_input',
+                        'label' => 'Custom amounts',
+                        'description' => 'Allow customers to enter their own amounts for the product.'
+                    )
+                    );
                 ?>
                 </div>
             </div>
