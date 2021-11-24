@@ -1,3 +1,4 @@
-.yh-show-if {
-    display:none;
-}
+.yh-show-if {display:none; }
+/** used for field sizes **/
+.yh-small-input { max-width:100px; }
+.yh-med-input { max-width:200px; }

@@ -14,8 +14,12 @@ define( 'YH_NYP_VERSION', '1.0.0' );
 define( 'YH_NYP_DIR', dirname( __FILE__ ) );
 define( 'YH_NYP_BASENAME', plugin_basename( __FILE__ ) );
 
+//Template path for custom Woo Templates when needed.
+define( 'YH_NYP_TEMPLATE_PATH', YH_NYP_DIR . '/templates/' );
+
 // Includes
 require_once YH_NYP_DIR . '/classes/admin.php';
+require_once YH_NYP_DIR . '/classes/class-frontend.php';
 
 class YH_Name_Your_Price {
     
@@ -40,6 +44,39 @@ class YH_Name_Your_Price {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Helper function to determine if a product is a Name Your Price product or not.
+     * @since 1.0.0
+     * @param int $product_id The product or post ID.
+     * @return boolean
+     */
+    public static function is_nyp_product( $product_id = null ) {
+        if ( empty( $product_id ) ) {
+            $is_nyp = false;
+        }
+
+        $product_is_nyp = get_post_meta( $product_id, '_yh_is_nyp_product', true );
+
+        if ( $product_is_nyp ) {
+            $is_nyp = true;
+        } else {
+            $is_nyp = false;
+        }
+
+        return $is_nyp;
+    }
+
+    /**
+     * Get the Product ID of a product.
+     * @since 1.0.0
+     * @param object The WC product object.
+     * @return int The Product ID of the parent or simple product.
+     */
+    public static function get_product_id( $product ) {
+        $product_id = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
+        return $product_id;
     }
 
 } // end of class.
