@@ -35,6 +35,14 @@ class YH_Name_Your_Price_Admin {
      */
     public function woocommerce_product_write_panel_tabs() {
     ?>
+    <style>
+        #woocommerce-coupon-data ul.wc-tabs li.custom_tab a::before,
+        #woocommerce-product-data ul.wc-tabs li.custom_tab a::before,
+        .woocommerce ul.wc-tabs li.custom_tab a::before {
+            font-family: Dashicons;
+            content: "gg";
+        }
+    </style>
         <li class="yh_name_your_price"><a href="#yh_name_your_price_data"><span><?php esc_html_e( 'Name Your Price', 'yh-name-your-price' ); ?></span></a></li>
 	<?php
     }
@@ -62,8 +70,8 @@ class YH_Name_Your_Price_Admin {
                 woocommerce_wp_checkbox(
                     array(
                         'id' => '_yh_is_nyp_product',
-                        'label' => 'Enable Name Your Price',
-                        'description' => 'Select this option to enable name your price functionality',
+                        'label' => __( 'Enable Name Your Price', 'yh-name-your-price' ),
+                        'description' => __( 'Select this option to enable name your price functionality', 'yh-name-your-price' ),
                         'cbvalue' => $cbvalue
                     )
                 );
@@ -74,9 +82,9 @@ class YH_Name_Your_Price_Admin {
                 woocommerce_wp_text_input(
                     array(
                         'id' => '_yh_nyp_label',
-                        'label' => 'Name Your Price Label',
-                        'placeholder' => 'Name Your Price',
-                        'description' => 'Write a custom label on the frontend.',
+                        'label' => __( 'Name Your Price Label', 'yh-name-your-price' ),
+                        'placeholder' => __( 'Enter Amount', 'yh-name-your-price' ),
+                        'description' => __( 'Write a custom label for the frontend.', 'yh-name-your-price' ),
                         'class' => 'yh-med-input'
                     )
                 );
@@ -84,9 +92,9 @@ class YH_Name_Your_Price_Admin {
                 woocommerce_wp_text_input(
                     array(
                         'id' => '_yh_min_value',
-                        'label' => 'Minimum Amount',
+                        'label' => __( 'Minimum Amount', 'yh-name-your-price' ),
                         'data_type' => 'price',
-                        'description' => 'Set the minimum value a customer may enter. Set it to 0 to make free purchases allowed.',
+                        'description' => __( 'Set the minimum value a customer may enter. Set it to 0 to make free purchases allowed.', 'yh-name-your-price' ),
                         'class' => 'yh-small-input'
                     )
                 ); 
@@ -95,9 +103,9 @@ class YH_Name_Your_Price_Admin {
                 woocommerce_wp_text_input(
                     array(
                         'id' => '_yh_max_value',
-                        'label' => 'Maximum Amount',
+                        'label' => __( 'Maximum Amount', 'yh-name-your-price' ),
                         'data_type' => 'price',
-                        'description' => 'Set the maximum value a customer may enter. Set it to 0 or leave it blank to allow any amount.',
+                        'description' => __( 'Set the maximum value a customer may enter. Set it to 0 or leave it blank to allow any amount.', 'yh-name-your-price' ),
                         'class' => 'yh-small-input'
                     )
                 );

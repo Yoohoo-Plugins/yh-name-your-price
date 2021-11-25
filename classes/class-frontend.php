@@ -46,7 +46,21 @@ class YH_Name_Your_Price_Frontend {
     
     // Hide the Price for now.
     if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
-        $price = '';
+        $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
+        $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
+
+        // If both are empty, let's set default text here.
+        if ( empty( $min_value ) && empty( $max_value ) ) {
+            $price = 'Enter any amount.';
+        } else if ( empty( $min_value ) && ! empty( $max_value ) ) {
+            $price = 'Enter an amount less than ' . wc_price( $max_value );
+        } else if ( ! empty( $min_value ) && empty( $max_value ) ) {
+            $price = 'Enter an amount greater than ' . wc_price( $min_value );
+        } elseif ( ! empty( $min_value ) && ! empty( $max_value ) ) {
+            $price = __( sprintf( 'Enter an amount between %s and %s', wc_price( $min_value ), wc_price( $max_value ) ), 'yh-name-your-price' );
+        }
+
+        $price = apply_filters( 'yh_nyp_price_text', $price );
     }
 
     return $price;
@@ -124,6 +138,11 @@ class YH_Name_Your_Price_Frontend {
 				return $passed;
 			}
 
+            //Get Min and Max Amounts for a product.
+            $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
+            $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
+            var_dump( $max_value );
+
 			if ( ! isset( $_REQUEST['yh_nyp_amount'] ) || empty( $_REQUEST['yh_nyp_amount'] ) ) {
 				$amount = 0;
 			} else {
@@ -133,14 +152,28 @@ class YH_Name_Your_Price_Frontend {
 			$amount = apply_filters( 'yh_nyp_get_price', floatval( $amount ) );
 
 			if ( ! is_numeric( $amount ) ) {
-				$error_message = 'invalid_price';
+				$error_message = __( 'It seems you have entered an invalid price, please can you try again with numeric values only.', 'yh-name-your-price' );
 				$passed        = false;
 			}
 
 			if ( $amount < 0 ) {
-				$error_message = 'negative_price';
+				$error_message = __( 'Only values that are 0 or above is allowed. Please try again.', 'yh-name-your-price' );
 				$passed        = false;
 			}
+
+            if ( ! empty( $min_value ) ){
+                if ( $amount < $min_value ) {
+                    $error_message = __( 'Please enter a value higher than ' . wc_price( $min_value ), 'yh-name-your-price' );
+                    $passed = false;
+                }
+            }
+
+            if ( ! empty( $max_value ) ){
+                if ( $amount > $max_value ) {
+                    $error_message = __( 'Please enter a value less than ', wc_price( $max_value ), 'yh-name-your-price' );
+                    $passed = false;
+                }
+            }
 
 			if ( $error_message ) {
 				wc_add_notice( $error_message, 'error' );
@@ -152,6 +185,7 @@ class YH_Name_Your_Price_Frontend {
 
         /**
          * Apply the pricing from the session.
+         * @since 1.0.0
          */
         public function get_cart_item_from_session( $cart_item, $values ) {
 			if ( isset( $values['yh_nyp_amount'] ) ) {

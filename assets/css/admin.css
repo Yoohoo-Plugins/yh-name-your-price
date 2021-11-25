@@ -2,3 +2,8 @@
 /** used for field sizes **/
 .yh-small-input { max-width:100px; }
 .yh-med-input { max-width:200px; }
+
+#woocommerce-product-data ul.wc-tabs li.yh_name_your_price a::before {
+	font-family: Dashicons;
+    content: "\f464";
+}
