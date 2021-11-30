@@ -168,7 +168,6 @@ class YH_Name_Your_Price_Frontend {
             //Get Min and Max Amounts for a product.
             $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
             $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
-            var_dump( $max_value );
 
 			if ( ! isset( $_REQUEST['yh_nyp_amount'] ) || empty( $_REQUEST['yh_nyp_amount'] ) ) {
 				$amount = 0;
