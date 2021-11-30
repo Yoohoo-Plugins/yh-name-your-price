@@ -5,7 +5,8 @@
 ![License](https://img.shields.io/badge/license-GPL--2.0%2B-red.svg?style=flat-square)
 
 ### Welcome to the Name Your Price GitHub Repository
-Add a description of the product here.
+Allow customer's to enter their own amount on WooCommerce products to help increase your sales.
+
 
 For more information please visit [yoohooplugins.com/plugins/name-your-price](https://yoohooplugins.com/plugins/name-your-price)
 
