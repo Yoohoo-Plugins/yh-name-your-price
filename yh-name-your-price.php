@@ -1,10 +1,17 @@
 <?php
 /**
- * Plugin Name: Name Your Price
- * Description: Allow customer's to enter their own amount on products to help increase your sales.
- * Version: 1.0.0
- * Author: Yoohoo Plugins
- * Author URI: https://yoohooplugins.com
+ * Plugin Name:       Name Your Price
+ * Plugin URI:        https://yoohooplugins.com/plugins/name-your-price/
+ * Description:       Allow customer's to enter their own amount on WooCommerce products to help increase your sales.
+ * Version:           1.0.0
+ * Requires at least: 5.0
+ * Requires PHP:      7.3
+ * Author:            Yoohoo Plugins
+ * Author URI:        https://yoohooplugins.com/
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       yh-name-your-price
+ * Domain Path:       /languages
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
@@ -32,6 +39,15 @@ class YH_Name_Your_Price {
      * @since 1.0.0
      */
     public function hooks() {
+        add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+    }
+
+    /**
+     * Allow localization for strings.
+     * @since 1.0.0
+     */
+    public function load_plugin_textdomain(){
+        load_plugin_textdomain( 'yh-name-your-price', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
     }
 
     /**
