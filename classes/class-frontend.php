@@ -7,15 +7,37 @@ class YH_Name_Your_Price_Frontend {
      * @since 1.0.0
      */
     public function __construct() {
-        add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'yh_nyp_load_custom_single_product_template' ) );
+        add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'yh_nyp_load_custom_single_product_template' ) );
         add_filter( 'woocommerce_get_price_html', array( $this, 'hide_default_price_html' ), 20, 2 );
+
+        //Force is_purchasable if no price is set but is a NYP product.
+        add_filter( 'woocommerce_is_purchasable', array( $this, 'set_is_purchasable' ) );
 
         //Cart Filters
         add_filter( 'woocommerce_add_cart_item_data', array( $this, 'yh_nyp_add_cart_item_data' ), 20, 3 );
         add_filter( 'woocommerce_add_cart_item', array( $this, 'yh_nyp_add_cart_item' ), 20, 1 );
         add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'yh_nyp_add_cart_validation' ), 20, 4 );
         add_filter( 'woocommerce_get_cart_item_from_session', array( $this, 'get_cart_item_from_session' ), 20, 2 );
+        add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'loop_add_to_cart_link' ), 20, 2 );
 
+
+
+    }
+
+    /**
+     * Handle products where there is no regular or sale price but is a "Name Your Price" product.
+     * @since 1.0.0
+     */
+    public function set_is_purchasable( $is_purchasable ) {
+        global $product;
+
+        $product_id = YH_Name_Your_Price::get_product_id( $product );
+
+        if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) { 
+            $is_purchasable = true;
+        }
+        
+        return $is_purchasable;
 
     }
 
@@ -29,7 +51,7 @@ class YH_Name_Your_Price_Frontend {
         $product_id = YH_Name_Your_Price::get_product_id( $product );
         $args = array( 'product_id' => $product_id );
 		$args['args'] = $args;
-        
+
         // Load custom template if product is a Name Your Price Product
         if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
             wc_get_template( 'name-your-price-single-product.php', $args, YH_NYP_TEMPLATE_PATH, YH_NYP_TEMPLATE_PATH );
@@ -41,13 +63,18 @@ class YH_Name_Your_Price_Frontend {
      * @since 1.0.0
      */
     public function hide_default_price_html( $price, $product ) {
-    // hide the price for now.
-    $product_id = YH_Name_Your_Price::get_product_id( $product );
+
+        $product_id = YH_Name_Your_Price::get_product_id( $product );
     
     // Hide the Price for now.
     if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
+
         $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
         $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
+
+        if ( empty( $product->get_regular_price() ) ) {
+            $product->set_regular_price( $max_value );
+        }
 
         // If both are empty, let's set default text here.
         if ( empty( $min_value ) && empty( $max_value ) ) {
@@ -201,6 +228,23 @@ class YH_Name_Your_Price_Frontend {
 
 			return $cart_item;
 		}
+
+        /**
+         * Adjust the Add To Cart Link to rather redirect to the NYP product so customer's may enter an amount.
+         * @since 1.0.0
+         */
+        public function loop_add_to_cart_link( $link, $product ) {
+            $product_id = YH_Name_Your_Price::get_product_id( $product );
+
+            if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
+                // Let's build the button link and make it filterable.
+                $link = get_permalink( $product_id );
+
+                $link = '<a href="' . esc_url( $link ) . '" data-quantity="1" class="button product_type_simple add_to_cart_button" data-product_id="' . $product_id . '" data-product_sku="" aria-label="' . esc_html( $product->get_title() ) . '" rel="nofollow">' . apply_filters( 'yh_nyp_shop_page_product_button_text', __( 'View Product', 'yh-name-your-price' ) ) . '</a>';
+            
+            }
+            return $link;
+        }
 
 } // End Class
 new YH_Name_Your_Price_Frontend();
