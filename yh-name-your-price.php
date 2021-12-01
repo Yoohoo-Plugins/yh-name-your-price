@@ -91,7 +91,11 @@ class YH_Name_Your_Price {
      * @return int The Product ID of the parent or simple product.
      */
     public static function get_product_id( $product ) {
-        $product_id = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
+       
+        if ( ! $product ) {
+            return $product;
+        }
+        $product_id = $product->get_parent_id() ? $product->get_parent_id() :$product->get_id();
         return $product_id;
     }
 

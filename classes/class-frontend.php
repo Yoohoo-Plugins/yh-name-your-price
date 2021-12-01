@@ -7,11 +7,8 @@ class YH_Name_Your_Price_Frontend {
      * @since 1.0.0
      */
     public function __construct() {
-        add_action( 'woocommerce_before_add_to_cart_form', array( $this, 'yh_nyp_load_custom_single_product_template' ) );
+        add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'yh_nyp_load_custom_single_product_template' ) );
         add_filter( 'woocommerce_get_price_html', array( $this, 'hide_default_price_html' ), 20, 2 );
-
-        //Force is_purchasable if no price is set but is a NYP product.
-        add_filter( 'woocommerce_is_purchasable', array( $this, 'set_is_purchasable' ) );
 
         //Cart Filters
         add_filter( 'woocommerce_add_cart_item_data', array( $this, 'yh_nyp_add_cart_item_data' ), 20, 3 );
@@ -24,22 +21,7 @@ class YH_Name_Your_Price_Frontend {
 
     }
 
-    /**
-     * Handle products where there is no regular or sale price but is a "Name Your Price" product.
-     * @since 1.0.0
-     */
-    public function set_is_purchasable( $is_purchasable ) {
-        global $product;
 
-        $product_id = YH_Name_Your_Price::get_product_id( $product );
-
-        if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) { 
-            $is_purchasable = true;
-        }
-        
-        return $is_purchasable;
-
-    }
 
     /**
      * Load custom product for input fields.
@@ -103,7 +85,8 @@ class YH_Name_Your_Price_Frontend {
      */
     public function yh_nyp_add_cart_item( $cart_item_data ) {
 
-    $product_id = $cart_item_data['variation_id'] ? $cart_item_data['variation_id'] : $cart_item_data['product_id'];
+    $product_id = ! empty( $cart_item_data['variation_id'] ) ? $cart_item_data['variation_id'] : $cart_item_data['product_id'];
+
 
     // Check to see if the product is a Name Your Price product, if so let's figure out how much to set it to.
     if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
@@ -111,10 +94,9 @@ class YH_Name_Your_Price_Frontend {
         $product = wc_get_product( $product_id );
 
         if ( isset( $cart_item_data['yh_nyp_amount'] ) ) {
-
+           
             $product = $cart_item_data['data'];
             $product->set_price( $cart_item_data['yh_nyp_amount'] );
-
         }
 
     }
@@ -233,6 +215,8 @@ class YH_Name_Your_Price_Frontend {
          * @since 1.0.0
          */
         public function loop_add_to_cart_link( $link, $product ) {
+
+       
             $product_id = YH_Name_Your_Price::get_product_id( $product );
 
             if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {

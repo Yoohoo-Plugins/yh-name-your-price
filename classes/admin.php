@@ -14,7 +14,7 @@ class YH_Name_Your_Price_Admin {
         // Product meta setup and saving.
         add_action( 'woocommerce_product_write_panel_tabs', array( $this, 'woocommerce_product_write_panel_tabs' ) );
         add_action( 'woocommerce_product_data_panels', array( $this, 'woocommerce_product_data_panels' ) );
-        add_action( 'woocommerce_process_product_meta', array( $this, 'woocommerce_process_product_meta' ) );
+        add_action( 'woocommerce_process_product_meta', array( $this, 'woocommerce_process_product_meta' ), 50 );
 
         // JS for admin
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
@@ -122,35 +122,58 @@ class YH_Name_Your_Price_Admin {
     public function woocommerce_process_product_meta() {
         global $post_id;
 
-    if ( isset( $_POST['_yh_is_nyp_product'] ) 
-		&& !empty( $_POST['_yh_is_nyp_product'] )
-		&& $_POST['_yh_is_nyp_product'] !== 'no' ) {
-		$is_nyp = 1;
-	} else {
-		$is_nyp = 0;
-	}
+        if ( isset( $_POST['_yh_is_nyp_product'] ) 
+            && !empty( $_POST['_yh_is_nyp_product'] )
+            && $_POST['_yh_is_nyp_product'] !== 'no' ) {
+            $is_nyp = 1;
+        } else {
+            $is_nyp = 0;
+        }
+        
+        //Check post meta now
+        if ( get_post_meta( $post_id, '_yh_is_nyp_product', true ) ) {
+            $is_nyp = get_post_meta( $post_id, '_yh_is_nyp_product', true );
+        }
 
-    if ( isset ( $is_nyp ) ) {
-		update_post_meta( $post_id, '_yh_is_nyp_product', $is_nyp );
-	}
+        // Let's not try to update things if it's a Name Your Price product.  
+        if ( ! $is_nyp ) {
+            return;
+        }
 
-    // Update label value.
-    if ( isset( $_POST['_yh_nyp_label'] ) ) {
-        $label = sanitize_text_field( $_POST['_yh_nyp_label'] );
-        update_post_meta( $post_id, '_yh_nyp_label', $label );
-    }
+        if ( isset ( $is_nyp ) ) {
+            update_post_meta( $post_id, '_yh_is_nyp_product', $is_nyp );
+        }
 
-    // Update min value
-    if ( isset( $_POST['_yh_min_value'] ) ) {
-        $min_value = (float) $_POST['_yh_min_value'];
-        update_post_meta( $post_id, '_yh_min_value', $min_value );
-    }
+        // Update label value.
+        if ( isset( $_POST['_yh_nyp_label'] ) ) {
+            $label = sanitize_text_field( $_POST['_yh_nyp_label'] );
+            update_post_meta( $post_id, '_yh_nyp_label', $label );
+        }
 
-    // Update max value
-    if ( isset( $_POST['_yh_max_value'] ) ) {
-        $max_value = (float) $_POST['_yh_max_value'];
-        update_post_meta( $post_id, '_yh_max_value', $max_value );
-    }
+        // Update min value
+        if ( isset( $_POST['_yh_min_value'] ) ) {
+            $min_value = (float) $_POST['_yh_min_value'];
+            update_post_meta( $post_id, '_yh_min_value', $min_value );
+        }
+
+        // Update max value
+        if ( isset( $_POST['_yh_max_value'] ) ) {
+            $max_value = (float) $_POST['_yh_max_value'];
+            update_post_meta( $post_id, '_yh_max_value', $max_value );
+        }
+
+        if ( empty( $_POST['_regular_price'] ) || get_post_meta( $post_id, '_regular_price', true ) == '' ) {
+            if ( ! empty( $max_value ) ) {
+                update_post_meta( $post_id, '_regular_price', $max_value );
+                update_post_meta( $post_id, '_price', $max_value );
+            } elseif ( ! empty( $min_value ) ) {
+                update_post_meta( $post_id, '_regular_price', $max_value );
+                update_post_meta( $post_id, '_price', $max_value );
+            } else {
+                update_post_meta( $post_id, '_regular_price', '999' ); //Default value.
+                update_post_meta( $post_id, '_price', '999' ); //Default value.
+            }
+        }
 
     }
 
