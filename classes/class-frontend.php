@@ -173,6 +173,21 @@ class YH_Name_Your_Price_Frontend {
 				$error_message = __( 'Invalid amount entered. Please try again.', 'yh-name-your-price' );
 				$passed        = false;
 			}
+
+            // Loop through each option, make sure a value matches. If it doesn't, throw an error
+            $price_match = false;
+            foreach ( $set_values as $key => $value ) { 
+                // Amount is okay, we're just gonna break and continue.
+                if ( (float) $value == $amount ) {
+                    $price_match = true;
+                }
+            }
+
+            // Price isn't okay, bail.
+            if ( ! $price_match ) {
+                $error_message = __( 'Amount has been modified.', 'yh-name-your-price' );
+                $passed = false;
+            }
 		}
 
 		if ( ! is_numeric( $amount ) ) {
