@@ -169,11 +169,6 @@ class YH_Name_Your_Price_Frontend {
 		$amount = apply_filters( 'yh_nyp_get_price', floatval( $amount ) );
 
 		if ( ! empty( $set_values ) ) {
-			if ( $amount > max( $set_values ) ) {
-				$error_message = __( 'Invalid amount entered. Please try again.', 'yh-name-your-price' );
-				$passed        = false;
-			}
-
             // Loop through each option, make sure a value matches. If it doesn't, throw an error
             $price_match = false;
             foreach ( $set_values as $key => $value ) { 
