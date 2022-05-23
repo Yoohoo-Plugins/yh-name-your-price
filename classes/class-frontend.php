@@ -227,11 +227,11 @@ class YH_Name_Your_Price_Frontend {
 		return $cart_item;
 	}
 
-		/**
-		 * Adjust the Add To Cart Link to rather redirect to the NYP product so customer's may enter an amount.
-		 *
-		 * @since 1.0.0
-		 */
+    /**
+     * Adjust the Add To Cart Link to rather redirect to the NYP product so customer's may enter an amount.
+     *
+     * @since 1.0.0
+     */
 	public function loop_add_to_cart_link( $link, $product ) {
 
 		$product_id = YH_Name_Your_Price::get_product_id( $product );
