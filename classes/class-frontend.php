@@ -17,11 +17,7 @@ class YH_Name_Your_Price_Frontend {
         add_filter( 'woocommerce_get_cart_item_from_session', array( $this, 'get_cart_item_from_session' ), 20, 2 );
         add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'loop_add_to_cart_link' ), 20, 2 );
 
-
-
     }
-
-
 
     /**
      * Load custom product for input fields.
@@ -46,27 +42,34 @@ class YH_Name_Your_Price_Frontend {
      */
     public function hide_default_price_html( $price, $product ) {
 
-        $product_id = YH_Name_Your_Price::get_product_id( $product );
+    $product_id = YH_Name_Your_Price::get_product_id( $product );
     
     // Hide the Price for now.
     if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
 
-        $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
-        $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
+        $set_values = get_post_meta( $product_id, '_yh_set_value', true ) ?: '';
 
-        if ( empty( $product->get_regular_price() ) ) {
-            $product->set_regular_price( $max_value );
-        }
+        // If no set values, allow min/max values.
+        if ( empty( $set_values ) ) {
+            $min_value = get_post_meta( $product_id, '_yh_min_value', true ) ?: 0;
+            $max_value = get_post_meta( $product_id, '_yh_max_value', true ) ?: 0;
 
-        // If both are empty, let's set default text here.
-        if ( empty( $min_value ) && empty( $max_value ) ) {
-            $price = 'Enter any amount.';
-        } else if ( empty( $min_value ) && ! empty( $max_value ) ) {
-            $price = 'Enter an amount less than ' . wc_price( $max_value );
-        } else if ( ! empty( $min_value ) && empty( $max_value ) ) {
-            $price = 'Enter an amount greater than ' . wc_price( $min_value );
-        } elseif ( ! empty( $min_value ) && ! empty( $max_value ) ) {
-            $price = __( sprintf( 'Enter an amount between %s and %s', wc_price( $min_value ), wc_price( $max_value ) ), 'yh-name-your-price' );
+            if ( empty( $product->get_regular_price() ) ) {
+                $product->set_regular_price( $max_value );
+            }
+
+            // If both are empty, let's set default text here.
+            if ( empty( $min_value ) && empty( $max_value ) ) {
+                $price = 'Enter any amount.';
+            } else if ( empty( $min_value ) && ! empty( $max_value ) ) {
+                $price = 'Enter an amount less than ' . wc_price( $max_value );
+            } else if ( ! empty( $min_value ) && empty( $max_value ) ) {
+                $price = 'Enter an amount greater than ' . wc_price( $min_value );
+            } elseif ( ! empty( $min_value ) && ! empty( $max_value ) ) {
+                $price = __( sprintf( 'Enter an amount between %s and %s', wc_price( $min_value ), wc_price( $max_value ) ), 'yh-name-your-price' );
+            }
+        } else {
+            $price = 'Choose an amount';
         }
 
         $price = apply_filters( 'yh_nyp_price_text', $price );

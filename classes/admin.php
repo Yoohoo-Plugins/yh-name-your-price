@@ -109,6 +109,18 @@ class YH_Name_Your_Price_Admin {
                         'class' => 'yh-small-input'
                     )
                 );
+
+                // Predefined values
+                woocommerce_wp_textarea_input(
+                    array(
+                        'id' => '_yh_set_value',
+                        'label' => __( 'Set Values', 'yh-name-your-price' ),
+                        'data_type' => 'price',
+                        // 'description' => __( 'Set the maximum value a customer may enter. Set it to 0 or leave it blank to allow any amount.', 'yh-name-your-price' ),
+                        // 'class' => '',
+                        'placeholder' => __( 'Enter predefined price options separated by "|" ( i.e. 1|5|10 )' )
+                    )
+                );
                 ?>
                 </div>
             </div>
@@ -160,6 +172,12 @@ class YH_Name_Your_Price_Admin {
         if ( isset( $_POST['_yh_max_value'] ) ) {
             $max_value = (float) $_POST['_yh_max_value'];
             update_post_meta( $post_id, '_yh_max_value', $max_value );
+        }
+
+        // Update the set value
+        if ( isset( $_POST['_yh_set_value'] ) ) {
+            $set_value = sanitize_text_field( $_POST['_yh_set_value'] );
+            update_post_meta( $post_id, '_yh_set_value', $set_value );
         }
 
         if ( empty( $_POST['_regular_price'] ) || get_post_meta( $post_id, '_regular_price', true ) == '' ) {
