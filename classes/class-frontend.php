@@ -18,6 +18,8 @@ class YH_Name_Your_Price_Frontend {
 		add_filter( 'woocommerce_get_cart_item_from_session', array( $this, 'get_cart_item_from_session' ), 20, 2 );
 		add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'loop_add_to_cart_link' ), 20, 2 );
 
+		// Remove quantity input for NYP products.
+		add_filter( 'woocommerce_is_sold_individually', array( $this, 'remove_quantity_field' ), 20, 2 );
 	}
 
 	/**
@@ -254,6 +256,18 @@ class YH_Name_Your_Price_Frontend {
 
 		}
 		return $link;
+	}
+
+	/**
+	 * Remove the quantity option if product is NYP.
+	 * 
+	 * @since 1.1
+	 */
+	public function remove_quantity_field( $return, $product ) {
+		if ( YH_Name_Your_Price::is_nyp_product( $product->get_id() ) ) {
+			$return = true;
+		}
+		return apply_filters( 'yh_name_your_price_hide_quantity', $return );
 	}
 
 } // End Class
