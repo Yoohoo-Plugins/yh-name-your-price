@@ -12,6 +12,8 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       yh-name-your-price
  * Domain Path:       /languages
+ * 
+ * WC tested up to: 7.5.1
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
