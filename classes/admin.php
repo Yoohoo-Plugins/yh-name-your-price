@@ -18,6 +18,13 @@ class YH_Name_Your_Price_Admin {
 
         // JS for admin
         add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+
+        // Settings for admin area and global settings
+        add_filter( 'woocommerce_get_sections_products', array( $this, 'name_your_price_sections_products' ), 99 );
+        add_filter( 'woocommerce_get_settings_products', array( $this, 'name_your_price_all_settings' ), 10, 2 );
+        add_action('woocommerce_update_options_products_yh_nyp', array( $this, 'name_your_price_validate_license_save' ) );
+
+
     }
 
     /**
@@ -192,6 +199,120 @@ class YH_Name_Your_Price_Admin {
                 update_post_meta( $post_id, '_price', '999' ); //Default value.
             }
         }
+
+    }
+
+    // ---- Admin global settings functions go below ---- // 
+
+    /**
+     * Add settings section for Name Your Price global settings.
+     * 
+     * @since 1.1
+     */
+    public function name_your_price_sections_products( $sections ) {
+        $sections['yh_nyp'] = esc_html__( 'Name Your Price', 'name-your-price' );
+	    return $sections;
+    }
+
+    /**
+     * Show options for the Name Your Price product settings
+     * 
+     * @since 1.1
+     */
+    public function name_your_price_all_settings( $settings, $current_section ) {
+        /**
+         * Check the current section is what we want
+         **/
+        if ( $current_section == 'yh_nyp' ) {
+            $settings = array();
+            // Add Title to the Settings
+            $settings[] = array( 
+                'name' => esc_html__( 'Name Your Price Settings', 'name-your-price' ), 
+                'type' => 'title', 
+                'id' => 'yh_nyp_settings_title' 
+            );
+            
+            $license_status = get_option( 'yh_nyp_license_status' );
+
+            if ( ! $this::is_license_expired() ) {
+                $license_desc = sprintf( __( 'Congratulations, your license key is active. <strong>Expires: %s</strong>. <br>To deactivate your license key, please remove it from the field and visit %s.', 'name-your-price' ), $license_status['expires'], '<a href="https://yoohooplugins.com/account/license-keys/" target="_blank">Yoohoo Plugins</a>' );
+            } else {
+                $license_desc = esc_html__( 'The license key is invalid. Please purchase/renew your license key or try again.', 'name-your-price' );
+            }
+
+            // Add second text field option
+            $settings[] = array(
+                'name'     => esc_html__( 'License Key', 'name-your-price' ),
+                'id'       => 'yh_nyp_license_key',
+                'desc_tip' => esc_html__( 'Enter your license key here to activate your product.', 'name-your-price' ),
+                'type'     => 'password',
+                'desc'     => $license_desc,
+            );
+            
+            $settings[] = array( 'type' => 'sectionend', 'id' => 'yh_nyp' );
+        
+        }
+
+        return $settings;
+    }
+
+    public function name_your_price_validate_license_save() {
+        $license_key = sanitize_text_field( $_REQUEST['yh_nyp_license_key'] );
+
+        // Activate or deactivate the license key on saving here.
+        // data to send in our API request
+        $api_params = array(
+            'edd_action' => 'activate_license',
+            'license'    => trim( $license_key ),
+            'item_id'    => YH_NYP_PLUGIN_ID, // The ID of the item in EDD
+            'url'        => home_url()
+        );
+
+        // Call the custom API.
+        $response = wp_remote_post( YOOHOO_STORE, array( 'timeout' => 15, 'sslverify' => true, 'body' => $api_params ) );
+
+        if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+            $message =  ( is_wp_error( $response ) && ! empty( $response->get_error_message() ) ) ? $response->get_error_message() : __( 'An error occurred, please try again.' );
+        }
+
+        if ( ! empty( $message ) ) {
+            echo $message;
+        }
+
+        $license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+        $license_status = array();
+        $license_status['license'] = $license_data->license;
+        $license_status['expires'] = $license_data->expires;
+
+        // Save license status to database.
+        update_option( 'yh_nyp_license_status', $license_status );
+    }
+
+    /**
+     * Check if the license key has expired or not.
+     *
+     * @return boolean $r True if license is expired, false if not.
+     */
+    public static function is_license_expired() {
+
+        $license_status = get_option( 'yh_nyp_license_status' );
+        $expiry_date = $license_status['expires'];
+
+        // If their license is never expiring, return false.
+        if ( $expiry_date == 'lifetime' ) {
+            return false;
+        }
+
+	    $today = date( 'Y-m-d H:i:s' );
+ 
+        if ( $expiry_date < $today ) {
+            $r = true;
+        } else {
+            $r = false;
+        }
+
+        return $r;
 
     }
 

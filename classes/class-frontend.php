@@ -258,17 +258,5 @@ class YH_Name_Your_Price_Frontend {
 		return $link;
 	}
 
-	/**
-	 * Remove the quantity option if product is NYP.
-	 * 
-	 * @since 1.1
-	 */
-	public function remove_quantity_field( $return, $product ) {
-		if ( YH_Name_Your_Price::is_nyp_product( $product->get_id() ) ) {
-			$return = true;
-		}
-		return apply_filters( 'yh_name_your_price_hide_quantity', $return );
-	}
-
 } // End Class
 new YH_Name_Your_Price_Frontend();
