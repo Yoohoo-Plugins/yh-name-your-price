@@ -1,21 +1,21 @@
-# Copyright (C) 2021 Yoohoo Plugins
+# Copyright (C) 2023 Yoohoo Plugins
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Name Your Price 1.0.0\n"
+"Project-Id-Version: Name Your Price 1.2\n"
 "Report-Msgid-Bugs-To: support@yoohooplugins.com\n"
 "Last-Translator: Yoohoo Plugins <support@yoohooplugins.com>\n"
 "Language-Team: Yoohoo Plugins <support@yoohooplugins.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-11-30T19:07:35+00:00\n"
+"POT-Creation-Date: 2023-04-04T09:04:08+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.5.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: yh-name-your-price\n"
 
 #. Plugin Name of the plugin
-#: classes/admin.php:46
+#: classes/admin.php:53
 msgid "Name Your Price"
 msgstr ""
 
@@ -35,51 +35,63 @@ msgstr ""
 msgid "https://yoohooplugins.com/"
 msgstr ""
 
-#: classes/admin.php:73
+#: classes/admin.php:80
 msgid "Enable Name Your Price"
 msgstr ""
 
-#: classes/admin.php:74
+#: classes/admin.php:81
 msgid "Select this option to enable name your price functionality"
 msgstr ""
 
-#: classes/admin.php:85
+#: classes/admin.php:92
 msgid "Name Your Price Label"
 msgstr ""
 
-#: classes/admin.php:86
-#: templates/name-your-price-single-product.php:16
+#: classes/admin.php:93
+#: templates/name-your-price-single-product.php:17
 msgid "Enter Amount"
 msgstr ""
 
-#: classes/admin.php:87
+#: classes/admin.php:94
 msgid "Write a custom label for the frontend."
 msgstr ""
 
-#: classes/admin.php:95
+#: classes/admin.php:102
 msgid "Minimum Amount"
 msgstr ""
 
-#: classes/admin.php:97
+#: classes/admin.php:104
 msgid "Set the minimum value a customer may enter. Set it to 0 to make free purchases allowed."
 msgstr ""
 
-#: classes/admin.php:106
+#: classes/admin.php:113
 msgid "Maximum Amount"
 msgstr ""
 
-#: classes/admin.php:108
+#: classes/admin.php:115
 msgid "Set the maximum value a customer may enter. Set it to 0 or leave it blank to allow any amount."
 msgstr ""
 
-#: classes/class-frontend.php:155
+#: classes/admin.php:124
+msgid "Set Values"
+msgstr ""
+
+#: classes/class-frontend.php:185
+msgid "Amount has been modified."
+msgstr ""
+
+#: classes/class-frontend.php:191
 msgid "It seems you have entered an invalid price, please can you try again with numeric values only."
 msgstr ""
 
-#: classes/class-frontend.php:160
+#: classes/class-frontend.php:196
 msgid "Only values that are 0 or above is allowed. Please try again."
 msgstr ""
 
-#: classes/class-frontend.php:166
+#: classes/class-frontend.php:202
 msgid "Please enter a value higher than "
+msgstr ""
+
+#: classes/class-frontend.php:255
+msgid "View Product"
 msgstr ""
