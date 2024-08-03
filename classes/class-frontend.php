@@ -19,8 +19,22 @@ class YH_Name_Your_Price_Frontend {
 		add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'loop_add_to_cart_link' ), 20, 2 );
 
 		// Remove quantity input for NYP products.
-		add_filter( 'woocommerce_is_sold_individually', array( $this, 'remove_quantity_field' ), 20, 2 );
+		// add_filter( 'woocommerce_is_sold_individually', array( $this, 'remove_quantity_field' ), 20, 2 );
 	}
+
+	// /**
+	//  * Remove the quantity field for NYP products
+	//  * @since TBD
+	//  */
+	// public function remove_quantity_field( $return, $product ) {
+	// 	$product_id = YH_Name_Your_Price::get_product_id( $product );
+
+	// 	if ( YH_Name_Your_Price::is_nyp_product( $product_id ) ) {
+	// 		return true;
+	// 	}
+
+	// 	return $return;
+	// }
 
 	/**
 	 * Load custom product for input fields.
@@ -198,14 +212,14 @@ class YH_Name_Your_Price_Frontend {
 			$passed        = false;
 		}
 
-		if ( ! empty( $min_value ) ) {
+		if ( ! empty( $min_value ) && empty( $set_values ) ) {
 			if ( $amount < $min_value ) {
 				$error_message = __( 'Please enter a value higher than ' . wc_price( $min_value ), 'yh-name-your-price' );
 				$passed        = false;
 			}
 		}
 
-		if ( ! empty( $max_value ) ) {
+		if ( ! empty( $max_value ) && empty( $set_values ) ) {
 			if ( $amount > $max_value ) {
 				$error_message = __( 'Please enter a value less than ', wc_price( $max_value ), 'yh-name-your-price' );
 				$passed        = false;
