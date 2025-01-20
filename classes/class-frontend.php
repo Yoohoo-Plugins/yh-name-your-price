@@ -79,7 +79,7 @@ class YH_Name_Your_Price_Frontend {
 
 				// If both are empty, let's set default text here.
 				if ( empty( $min_value ) && empty( $max_value ) ) {
-					$price = 'Enter any amount.';
+					$price = __( 'Enter any amount.', 'yh-name-your-price' );
 				} elseif ( empty( $min_value ) && ! empty( $max_value ) ) {
 					$price = 'Enter an amount less than ' . wc_price( $max_value );
 				} elseif ( ! empty( $min_value ) && empty( $max_value ) ) {
@@ -88,7 +88,7 @@ class YH_Name_Your_Price_Frontend {
 					$price = __( sprintf( 'Enter an amount between %s and %s', wc_price( $min_value ), wc_price( $max_value ) ), 'yh-name-your-price' );
 				}
 			} else {
-				$price = 'Choose an amount';
+				$price = __( 'Choose an amount', 'yh-name-your-price' );
 			}
 
 			$price = apply_filters( 'yh_nyp_price_text', $price );
@@ -184,7 +184,7 @@ class YH_Name_Your_Price_Frontend {
 
 		$amount = apply_filters( 'yh_nyp_get_price', floatval( $amount ) );
 
-
+		// Do not take into account min and max values. We assume set values are min/max already.
 		if ( ! empty( $set_values ) && ! empty( $set_values[0] ) ) {
             // Loop through each option, make sure a value matches. If it doesn't, throw an error
             $price_match = false;
@@ -202,6 +202,8 @@ class YH_Name_Your_Price_Frontend {
             }
 		}
 
+	
+
 		if ( ! is_numeric( $amount ) ) {
 			$error_message = __( 'It seems you have entered an invalid price, please can you try again with numeric values only.', 'yh-name-your-price' );
 			$passed        = false;
@@ -212,7 +214,7 @@ class YH_Name_Your_Price_Frontend {
 			$passed        = false;
 		}
 
-		if ( ! empty( $min_value ) && empty( $set_values ) ) {
+		if ( ! empty( $min_value ) && empty( $set_values[0] ) ) {
 			if ( $amount < $min_value ) {
 				$error_message = __( 'Please enter a value higher than ' . wc_price( $min_value ), 'yh-name-your-price' );
 				$passed        = false;
@@ -230,7 +232,7 @@ class YH_Name_Your_Price_Frontend {
 			wc_add_notice( $error_message, 'error' );
 		}
 
-			return $passed;
+		return $passed;
 
 	}
 
