@@ -3,6 +3,8 @@
  * Class for all admin settings.
  * @since 1.0.0
  */
+use Automattic\WooCommerce\Admin\BlockTemplates\BlockInterface;
+
 class YH_Name_Your_Price_Admin {
 
     /**
@@ -22,7 +24,11 @@ class YH_Name_Your_Price_Admin {
         // Settings for admin area and global settings
         add_filter( 'woocommerce_get_sections_products', array( $this, 'name_your_price_sections_products' ), 99 );
         add_filter( 'woocommerce_get_settings_products', array( $this, 'name_your_price_all_settings' ), 10, 2 );
-        add_action('woocommerce_update_options_products_yh_nyp', array( $this, 'name_your_price_validate_license_save' ) );
+        add_action( 'woocommerce_update_options_products_yh_nyp', array( $this, 'name_your_price_validate_license_save' ) );
+
+        // Settings for Product Builder
+        add_action( 'woocommerce_block_template_area_product-form_after_add_block_general', array( $this, 'product_builder_name_your_price_group' ) );
+        add_action( 'woocommerce_layout_template_after_instantiation', array( $this, 'add_product_builder_settings' ), 10, 3 );
 
 
     }
@@ -125,7 +131,7 @@ class YH_Name_Your_Price_Admin {
                         'data_type' => 'price',
                         // 'description' => __( 'Set the maximum value a customer may enter. Set it to 0 or leave it blank to allow any amount.', 'yh-name-your-price' ),
                         // 'class' => '',
-                        'placeholder' => __( 'Enter predefined price options separated by "|" ( i.e. 1|5|10 )' )
+                        'placeholder' => esc_html__( 'Enter predefined price options separated by "|" ( i.e. 1|5|10 )' )
                     )
                 );
                 ?>
@@ -315,6 +321,115 @@ class YH_Name_Your_Price_Admin {
         return $r;
 
     }
+
+    // ---- New functions for the Product Builder ---- //
+
+    /**
+     * Add support for the new product builder.
+     * Add a new group to products.
+     */
+    public function product_builder_name_your_price_group( BlockInterface $general_group ) {
+        $parent = $general_group->get_parent();
+      
+        $parent->add_group(
+          [
+            'id'         => 'my_pmpro-group',
+            'order'      => $general_group->get_order() + 999,
+            'attributes' => [
+              'title' => __( 'Name Your Price', 'yh-name-your-price' ),
+            ],
+          ]
+        );
+    }
+
+    /// Add settings to Product Builder
+	public function add_product_builder_settings( $layout_template_id, $layout_template_area, $layout_template ) {
+	    $name_your_price = $layout_template->get_group_by_id( 'my_pmpro-group' );
+
+        $settings_section = $name_your_price->add_section(
+            array(
+                'id'         => 'yh-name-your-price-section',
+                'order'      => 10,
+                'attributes' => array(
+                    'title'       => __( 'Name Your Price Settings', 'yh-name-your-price' ),
+                    // 'description' => __( 'This info will be displayed on the product page, category pages, social media, and search results.', 'yh-name-your-price' ),
+                ),
+            )
+        );
+
+        if ( $settings_section ) {
+
+	        $settings_section->add_block(
+                array(
+        			'id'    => 'name-your-price-checkbox',
+                    'blockName'  => 'woocommerce/product-checkbox-field',
+	            	'order' => 10,
+	            	'attributes' => array(
+	            		'label' => __( 'Enable Name Your Price', 'yh-name-your-price' ),
+                        'property' => 'meta_data._yh_is_nyp_product',
+                        'tooltip' => __( 'Enable this option to allow customers to enter their own price.', 'yh-name-your-price' ),
+                    
+                    )
+                )
+            );
+
+            $settings_section->add_block(
+                array(
+                  'id'         => 'name-your-price-label',
+                  'blockName'  => 'woocommerce/product-text-field',
+                  'order'      => 20,
+                  'attributes' => array(
+                    'label'       => __( 'Label', 'yh-name-your-price' ),
+                    'property'    => 'meta_data._yh_nyp_label',
+                    'placeholder' => __( 'Enter Amount', 'yh-name-your-price' ),
+                    'help'        => __( 'Write a custom label for the frontend', 'yh-name-your-price'),
+                  ),
+                )
+            );
+
+            // // Add minimum field.
+            $settings_section->add_block(
+                array(
+                    'id'    => 'name-your-price-min',
+                    'order' => 30,
+                    'blockName'  => 'woocommerce/product-pricing-field',
+                    'attributes' => array(
+                        'label' => __( 'Minimum Value', 'yh-name-your-price' ),
+                        'property' => 'meta_data._yh_min_value',
+                        'help' => __( 'Enter the minimum value for the Name Your Price field. Leave blank for no minimum.', 'yh-name-your-price' ),
+                    ),
+                )
+            );
+
+            // Add maximum field.
+            $settings_section->add_block(
+                array(
+                    'id'    => 'name-your-price-max',
+                    'order' => 70,
+                    'blockName'  => 'woocommerce/product-pricing-field',
+                    'attributes' => array(
+                        'label' => __( 'Maximum Value', 'yh-name-your-price' ),
+                        'property' => 'meta_data._yh_max_value',
+                        'help' => __( 'Enter the maximum value for the Name Your Price field. Leave blank for no maximum.', 'yh-name-your-price' ),
+                    ),
+                )
+            );
+
+            // Add textarea field now.
+            $settings_section->add_block(
+                array(
+                    'id'    => 'name-your-price-set-value',
+                    'order' => 80,
+                    'blockName'  => 'woocommerce/product-text-area-field',
+                    'attributes' => array(
+                        'label' => __( 'Set Value', 'yh-name-your-price' ),
+                        'property' => 'meta_data._yh_set_value',
+                        'help'     => __( 'Enter predefined price options separated by "|" ( i.e. 1|5|10 ). This will override any min or max value.', 'yh-name-your-price' ),
+                    ),
+                )
+            );
+        }
+	}
 
 } //end of class
 
