@@ -1,0 +1,4 @@
+== Changelog ==
+= 1.3 - 2025-01-23 =
+* ENHANCEMENT: Added support for for HPOS and Product Builder.
+* BUG FIX: Fixed a fatal error when trying to activate the license key.
