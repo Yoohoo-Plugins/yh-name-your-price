@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Yoohoo Plugins
+# Copyright (C) 2025 Yoohoo Plugins
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
@@ -9,29 +9,34 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-04-04T09:04:08+00:00\n"
+"POT-Creation-Date: 2025-01-23T19:05:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: yh-name-your-price\n"
 
 #. Plugin Name of the plugin
+#: yh-name-your-price.php
 #: classes/admin.php:53
 msgid "Name Your Price"
 msgstr ""
 
 #. Plugin URI of the plugin
+#: yh-name-your-price.php
 msgid "https://yoohooplugins.com/plugins/name-your-price/"
 msgstr ""
 
 #. Description of the plugin
+#: yh-name-your-price.php
 msgid "Allow customer's to enter their own amount on WooCommerce products to help increase your sales."
 msgstr ""
 
 #. Author of the plugin
+#: yh-name-your-price.php
 msgid "Yoohoo Plugins"
 msgstr ""
 
 #. Author URI of the plugin
+#: yh-name-your-price.php
 msgid "https://yoohooplugins.com/"
 msgstr ""
 
@@ -76,22 +81,22 @@ msgstr ""
 msgid "Set Values"
 msgstr ""
 
-#: classes/class-frontend.php:185
+#: classes/class-frontend.php:200
 msgid "Amount has been modified."
 msgstr ""
 
-#: classes/class-frontend.php:191
+#: classes/class-frontend.php:206
 msgid "It seems you have entered an invalid price, please can you try again with numeric values only."
 msgstr ""
 
-#: classes/class-frontend.php:196
+#: classes/class-frontend.php:211
 msgid "Only values that are 0 or above is allowed. Please try again."
 msgstr ""
 
-#: classes/class-frontend.php:202
+#: classes/class-frontend.php:217
 msgid "Please enter a value higher than "
 msgstr ""
 
-#: classes/class-frontend.php:255
+#: classes/class-frontend.php:270
 msgid "View Product"
 msgstr ""
