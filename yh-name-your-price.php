@@ -3,8 +3,8 @@
  * Plugin Name:       Name Your Price
  * Plugin URI:        https://yoohooplugins.com/plugins/name-your-price/
  * Description:       Allow customer's to enter their own amount on WooCommerce products to help increase your sales.
- * Version:           1.2
- * Requires at least: 5.0
+ * Version:           1.3
+ * Requires at least: 6.0
  * Requires PHP:      7.2
  * Author:            Yoohoo Plugins
  * Author URI:        https://yoohooplugins.com/
@@ -13,7 +13,7 @@
  * Text Domain:       yh-name-your-price
  * Domain Path:       /languages
  * 
- * WC tested up to: 7.5.1
+ * WC tested up to: 9.6.0
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
@@ -22,6 +22,11 @@ defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 define( 'YH_NYP_VERSION', '1.2' );
 define( 'YH_NYP_DIR', dirname( __FILE__ ) );
 define( 'YH_NYP_BASENAME', plugin_basename( __FILE__ ) );
+define( 'YH_NYP_PLUGIN_ID', '15193' );
+
+if ( ! defined( 'YOOHOO_STORE' ) ) {
+	define( 'YOOHOO_STORE', 'https://yoohooplugins.com/edd-sl-api/' );
+}
 
 //Template path for custom Woo Templates when needed.
 define( 'YH_NYP_TEMPLATE_PATH', YH_NYP_DIR . '/templates/' );
@@ -34,6 +39,14 @@ class YH_Name_Your_Price {
     
     public function __construct() {
         add_action( 'init', array( $this, 'hooks' ), 1 );
+
+        add_action( 'before_woocommerce_init', function() {
+            if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'product_block_editor', __FILE__, true );
+            }
+        } );
+
     }
 
     /**
