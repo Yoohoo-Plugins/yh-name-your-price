@@ -22,6 +22,11 @@ defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
 define( 'YH_NYP_VERSION', '1.2' );
 define( 'YH_NYP_DIR', dirname( __FILE__ ) );
 define( 'YH_NYP_BASENAME', plugin_basename( __FILE__ ) );
+define( 'YH_NYP_PLUGIN_ID', '15193' );
+
+if ( ! defined( 'YOOHOO_STORE' ) ) {
+	define( 'YOOHOO_STORE', 'https://yoohooplugins.com/edd-sl-api/' );
+}
 
 //Template path for custom Woo Templates when needed.
 define( 'YH_NYP_TEMPLATE_PATH', YH_NYP_DIR . '/templates/' );

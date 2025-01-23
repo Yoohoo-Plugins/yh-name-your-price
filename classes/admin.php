@@ -30,6 +30,7 @@ class YH_Name_Your_Price_Admin {
         add_action( 'woocommerce_block_template_area_product-form_after_add_block_general', array( $this, 'product_builder_name_your_price_group' ) );
         add_action( 'woocommerce_layout_template_after_instantiation', array( $this, 'add_product_builder_settings' ), 10, 3 );
 
+        add_action( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 
     }
 
@@ -430,6 +431,31 @@ class YH_Name_Your_Price_Admin {
             );
         }
 	}
+
+    // Add license notification to plugin meta.
+    public function plugin_row_meta( $links, $file ) {
+        if ( strpos( $file, 'yh-name-your-price.php' ) !== false ) {
+
+            // Get the license status and change color etc.
+            $license_status = get_option( 'yh_nyp_license_status' );
+
+            $is_active = false;
+            if ( ! $this::is_license_expired() ) {
+                $is_active = true;
+            }
+
+            $css = 'color:red;';
+            if ( $is_active ) {
+                $css = 'color:green;';
+            }
+
+            $row_meta = array(
+                'license' => '<a style="' . esc_attr( $css ) . '" href="' . admin_url( 'admin.php?page=wc-settings&tab=products&section=yh_nyp' ) . '">' . esc_html__( 'License Settings', 'yh-name-your-price' ) . '</a>',
+            );
+            return array_merge( $links, $row_meta );
+        }
+        return (array) $links;
+    }
 
 } //end of class
 
