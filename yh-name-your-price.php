@@ -3,8 +3,8 @@
  * Plugin Name:       Name Your Price
  * Plugin URI:        https://yoohooplugins.com/plugins/name-your-price/
  * Description:       Allow customer's to enter their own amount on WooCommerce products to help increase your sales.
- * Version:           1.2
- * Requires at least: 5.0
+ * Version:           1.3
+ * Requires at least: 6.0
  * Requires PHP:      7.2
  * Author:            Yoohoo Plugins
  * Author URI:        https://yoohooplugins.com/
@@ -13,7 +13,7 @@
  * Text Domain:       yh-name-your-price
  * Domain Path:       /languages
  * 
- * WC tested up to: 7.5.1
+ * WC tested up to: 9.6.0
  */
 
 defined( 'ABSPATH' ) || die( 'File cannot be accessed directly' );
